@@ -92,4 +92,4 @@ Within the poll interval (or immediately if using a webhook), Jenkins should sta
 
 To see what a **failed** build looks like, temporarily change the expected value in
 `tests/math.test.js` (e.g. `assert.equal(add(2, 3), 6)`), push, and watch the build turn red.
-Today session CI tool using Jenkiks using freestyle project
+Today session CI tool using Jenkiks using freestyle project and learn about pipeline concept

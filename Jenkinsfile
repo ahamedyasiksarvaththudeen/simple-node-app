@@ -112,7 +112,7 @@ pipeline {
 
         success {
             echo 'Build Successful'
-            echo 'Application is available at http://localhost:9090'
+            echo 'Application is available at http://localhost:9091commi'
         }
 
         failure {

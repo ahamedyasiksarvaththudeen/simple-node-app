@@ -2,17 +2,6 @@ pipeline {
 
     agent any
 
-    environment {
-        REPO_URL = 'https://github.com/ahamedyasiksarvaththudeen/simple-node-app.git'
-        BRANCH = 'main'
-
-        IMAGE_NAME = 'simple-node-app:latest'
-        CONTAINER_NAME = 'simple-node-container'
-
-        HOST_PORT = '8084'
-        CONTAINER_PORT = '3000'
-    }
-
     stages {
 
         stage('Clean Workspace') {
@@ -23,8 +12,8 @@ pipeline {
 
         stage('Clone Repository') {
             steps {
-                git branch: "${BRANCH}",
-                    url: "${REPO_URL}"
+                git branch: 'main',
+                    url: 'https://github.com/ahamedyasiksarvaththudeen/simple-node-app.git'
             }
         }
 
@@ -62,24 +51,20 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat '''
-                docker build -t %IMAGE_NAME% .
-                '''
+                bat 'docker build -t simple-node-app:latest .'
             }
         }
 
         stage('List Docker Images') {
             steps {
-                bat '''
-                docker images
-                '''
+                bat 'docker images'
             }
         }
 
         stage('Stop Existing Container') {
             steps {
                 bat '''
-                docker stop %CONTAINER_NAME% >nul 2>&1
+                docker stop simple-node-container >nul 2>&1
                 exit /b 0
                 '''
             }
@@ -88,7 +73,7 @@ pipeline {
         stage('Remove Existing Container') {
             steps {
                 bat '''
-                docker rm %CONTAINER_NAME% >nul 2>&1
+                docker rm simple-node-container >nul 2>&1
                 exit /b 0
                 '''
             }
@@ -98,26 +83,22 @@ pipeline {
             steps {
                 bat '''
                 docker run -d ^
-                --name %CONTAINER_NAME% ^
-                -p %HOST_PORT%:%CONTAINER_PORT% ^
-                %IMAGE_NAME%
+                --name simple-node-container ^
+                -p 9091:3000 ^
+                simple-node-app:latest
                 '''
             }
         }
 
         stage('Running Containers') {
             steps {
-                bat '''
-                docker ps
-                '''
+                bat 'docker ps'
             }
         }
 
         stage('Application Logs') {
             steps {
-                bat '''
-                docker logs %CONTAINER_NAME%
-                '''
+                bat 'docker logs simple-node-container'
             }
         }
 
@@ -126,14 +107,12 @@ pipeline {
     post {
 
         always {
-            echo '====================================='
             echo 'Pipeline Completed'
-            echo '====================================='
         }
 
         success {
             echo 'Build Successful'
-            echo 'Application URL: http://localhost:9090'
+            echo 'Application is available at http://localhost:9090'
         }
 
         failure {
